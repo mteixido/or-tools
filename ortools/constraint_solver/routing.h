@@ -389,6 +389,18 @@ class RoutingModel {
     return state_dependent_transit_evaluators_[callback_index];
   }
 
+  // Extra Cost Variable
+
+  // This method adds an arbitrary IntVar to the cost function to be minimized by the solver
+  // to ensure that the variable is bound it calls internally AddVariableMinimizedByFinalizer
+  IntVar* _extracostvar = nullptr;
+
+  void AddExtraCostVar(IntVar* extracostvar) {
+      _extracostvar = extracostvar;
+      AddVariableMinimizedByFinalizer(_extracostvar);
+  }
+
+
   /// Model creation
 
   /// Methods to add dimensions to routes; dimensions represent quantities
@@ -402,6 +414,7 @@ class RoutingModel {
   /// a time dimension).
   /// Setting the value of fix_start_cumul_to_zero to true will force the
   /// "cumul" variable of the start node of all vehicles to be equal to 0.
+
 
   /// Creates a dimension where the transit variable is constrained to be
   /// equal to evaluator(i, next(i)); 'slack_max' is the upper bound of the
