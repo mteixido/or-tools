@@ -591,13 +591,18 @@ test_python_graph_samples: \
 
 .PHONY: test_python_linear_solver_samples # Run all Python LP Samples (located in ortools/linear_solver/samples)
 test_python_linear_solver_samples: \
- rpy_simple_lp_program \
- rpy_simple_mip_program \
+ rpy_assignment_mip \
+ rpy_bin_packing_mip \
+ rpy_integer_programming_example \
  rpy_linear_programming_example \
- rpy_integer_programming_example
+ rpy_mip_var_array \
+ rpy_multiple_knapsack_mip \
+ rpy_simple_lp_program \
+ rpy_simple_mip_program
 
 .PHONY: test_python_sat_samples # Run all Python Sat Samples (located in ortools/sat/samples)
 test_python_sat_samples: \
+ rpy_assignment_sat \
  rpy_binpacking_problem_sat \
  rpy_bool_or_sample_sat \
  rpy_channeling_sample_sat \

@@ -36,6 +36,7 @@ file(GLOB_RECURSE proto_dotnet_files RELATIVE ${PROJECT_SOURCE_DIR}
   "ortools/util/*.proto"
   )
 list(REMOVE_ITEM proto_dotnet_files "ortools/constraint_solver/demon_profiler.proto")
+list(REMOVE_ITEM proto_dotnet_files "ortools/constraint_solver/assignment.proto")
 foreach(PROTO_FILE IN LISTS proto_dotnet_files)
   #message(STATUS "protoc proto(dotnet): ${PROTO_FILE}")
   get_filename_component(PROTO_DIR ${PROTO_FILE} DIRECTORY)
@@ -120,7 +121,7 @@ file(GENERATE OUTPUT dotnet/$<CONFIG>/replace_runtime.cmake
   CONTENT
   "FILE(READ ${PROJECT_SOURCE_DIR}/ortools/dotnet/${OR_TOOLS_DOTNET_NATIVE}/${OR_TOOLS_DOTNET_NATIVE}.csproj.in input)
 STRING(REPLACE \"@PROJECT_VERSION@\" \"${PROJECT_VERSION}\" input \"\${input}\")
-STRING(REPLACE \"@ortools@\" \"$<TARGET_FILE:${PROJECT_NAME}>\" input \"\${input}\")
+STRING(REPLACE \"@ortools@\" \"$<$<NOT:$<PLATFORM_ID:Windows>>:$<TARGET_SONAME_FILE:${PROJECT_NAME}>>\" input \"\${input}\")
 STRING(REPLACE \"@native@\" \"$<TARGET_FILE:google-ortools-native>\" input \"\${input}\")
 FILE(WRITE ${OR_TOOLS_DOTNET_NATIVE}/${OR_TOOLS_DOTNET_NATIVE}.csproj \"\${input}\")"
 )

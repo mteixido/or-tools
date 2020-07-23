@@ -467,7 +467,7 @@ run: build
 
 .PHONY: run_test # Run a .Net C# program (using 'dotnet test').
 run_test: build
-	"$(DOTNET_BIN)" test --blame --no-build $(ARGS) $(SOURCE_PATH)proj
+	"$(DOTNET_BIN)" test --no-build $(ARGS) $(SOURCE_PATH)proj
 endif
 
 # .Net F#
@@ -520,11 +520,17 @@ test_dotnet_graph_samples: ;
 
 .PHONY: test_dotnet_linear_solver_samples # Build and Run all .Net LP Samples (located in ortools/linear_solver/samples)
 test_dotnet_linear_solver_samples:
+	$(MAKE) run SOURCE=ortools/linear_solver/samples/AssignmentMip.cs
+	$(MAKE) run SOURCE=ortools/linear_solver/samples/BinPackingMip.cs
+	$(MAKE) run SOURCE=ortools/linear_solver/samples/LinearProgrammingExample.cs
+	$(MAKE) run SOURCE=ortools/linear_solver/samples/MipVarArray.cs
+	$(MAKE) run SOURCE=ortools/linear_solver/samples/MultipleKnapsackMip.cs
 	$(MAKE) run SOURCE=ortools/linear_solver/samples/SimpleLpProgram.cs
 	$(MAKE) run SOURCE=ortools/linear_solver/samples/SimpleMipProgram.cs
 
 .PHONY: test_dotnet_sat_samples # Build and Run all .Net SAT Samples (located in ortools/sat/samples)
 test_dotnet_sat_samples:
+	$(MAKE) run SOURCE=ortools/sat/samples/AssignmentSat.cs
 	$(MAKE) run SOURCE=ortools/sat/samples/BinPackingProblemSat.cs
 	$(MAKE) run SOURCE=ortools/sat/samples/BoolOrSampleSat.cs
 	$(MAKE) run SOURCE=ortools/sat/samples/ChannelingSampleSat.cs

@@ -37,9 +37,9 @@ ZLIB_TAG = 1.2.11
 ZLIB_ARCHIVE_TAG = 1211
 GFLAGS_TAG = 2.2.2
 GLOG_TAG = 0.4.0
-PROTOBUF_TAG = 3.11.2
-ABSL_TAG = 20200225
-CBC_TAG = 2.10.4
+PROTOBUF_TAG = v3.12.2
+ABSL_TAG = 20200225.2
+CBC_TAG = 2.10.5
 CGL_TAG = 0.60.3
 CLP_TAG = 1.17.4
 OSI_TAG = 0.108.6
@@ -211,7 +211,6 @@ Makefile.local: makefiles/Makefile.third_party.$(SYSTEM).mk
 	@echo # Paths must be without spaces, try to use 'dir "directory*" /x' to get the shortname without space of each directory >> Makefile.local
 	@echo #   e.g. dir "%ProgramFiles%*" /x >> Makefile.local
 
-
 ############
 ##  ZLIB  ##
 ############
@@ -338,8 +337,8 @@ dependencies\sources\protobuf-$(PROTOBUF_TAG)\cmake\build\protobuf.sln: dependen
 	cd dependencies\sources\protobuf-$(PROTOBUF_TAG)\cmake\build && "$(CMAKE)" -G $(CMAKE_PLATFORM) -Dprotobuf_BUILD_TESTS=OFF ..
 
 dependencies\sources\protobuf-$(PROTOBUF_TAG)\cmake\CMakeLists.txt:
-	$(WGET) --quiet -P dependencies\archives --no-check-certificate https://github.com/google/protobuf/archive/v$(PROTOBUF_TAG).zip
-	$(UNZIP) -q -d dependencies\sources dependencies\archives\v$(PROTOBUF_TAG).zip
+	-$(DELREC) dependencies/sources/protobuf-$(PROTOBUF_TAG)
+	git clone --quiet -b $(PROTOBUF_TAG) https://github.com/protocolbuffers/protobuf.git dependencies\sources\protobuf-$(PROTOBUF_TAG)
 
 PROTOBUF_INC = /I"$(WINDOWS_PROTOBUF_PATH)\\include"
 PROTOBUF_SWIG = -I"$(WINDOWS_PROTOBUF_DIR)/include"

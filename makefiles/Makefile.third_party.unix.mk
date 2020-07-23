@@ -21,9 +21,9 @@ PROTOC_BINARY := $(shell $(WHICH) ${UNIX_PROTOC_BINARY})
 # Tags of dependencies to checkout.
 GFLAGS_TAG = 2.2.2
 GLOG_TAG = 0.4.0
-PROTOBUF_TAG = 3.11.2
-ABSL_TAG = 20200225
-CBC_TAG = 2.10.4
+PROTOBUF_TAG = v3.12.2
+ABSL_TAG = 20200225.2
+CBC_TAG = 2.10.5
 CGL_TAG = 0.60.3
 CLP_TAG = 1.17.4
 OSI_TAG = 0.108.6
@@ -283,7 +283,7 @@ dependencies/install/lib/libprotobuf.$L: dependencies/install/lib/libglog.$L dep
 
 dependencies/sources/protobuf-$(PROTOBUF_TAG): patches/protobuf-$(PROTOBUF_TAG).patch | dependencies/sources
 	-$(DELREC) dependencies/sources/protobuf-$(PROTOBUF_TAG)
-	git clone --quiet -b v$(PROTOBUF_TAG) https://github.com/google/protobuf.git dependencies/sources/protobuf-$(PROTOBUF_TAG)
+	git clone --quiet -b $(PROTOBUF_TAG) https://github.com/google/protobuf.git dependencies/sources/protobuf-$(PROTOBUF_TAG)
 	cd dependencies/sources/protobuf-$(PROTOBUF_TAG) && \
     git apply "$(OR_TOOLS_TOP)/patches/protobuf-$(PROTOBUF_TAG).patch"
 
@@ -403,6 +403,7 @@ $(_ABSL_STATIC_LIB_DIR)libabsl_raw_logging_internal.a \
 $(_ABSL_STATIC_LIB_DIR)libabsl_scoped_set_env.a \
 $(_ABSL_STATIC_LIB_DIR)libabsl_spinlock_wait.a \
 $(_ABSL_STATIC_LIB_DIR)libabsl_stacktrace.a \
+$(_ABSL_STATIC_LIB_DIR)libabsl_status.a \
 $(_ABSL_STATIC_LIB_DIR)libabsl_str_format_internal.a \
 $(_ABSL_STATIC_LIB_DIR)libabsl_strings.a \
 $(_ABSL_STATIC_LIB_DIR)libabsl_strings_internal.a \
@@ -411,6 +412,7 @@ $(_ABSL_STATIC_LIB_DIR)libabsl_throw_delegate.a \
 $(_ABSL_STATIC_LIB_DIR)libabsl_time.a \
 $(_ABSL_STATIC_LIB_DIR)libabsl_time_zone.a \
 $(_ABSL_STATIC_LIB_DIR)libabsl_exponential_biased.a \
+$(_ABSL_STATIC_LIB_DIR)libabsl_cord.a \
 $(_ABSL_STATIC_LIB_DIR)libabsl_int128.a \
 $(_ABSL_STATIC_LIB_DIR)libabsl_debugging_internal.a \
 $(_ABSL_STATIC_LIB_DIR)libabsl_demangle_internal.a \

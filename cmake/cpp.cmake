@@ -26,11 +26,13 @@ else()
 endif()
 set(ABSL_DEPS
   absl::base
+  absl::cord
   absl::random_random
   absl::raw_hash_set
   absl::hash
   absl::memory
   absl::meta
+  absl::status
   absl::str_format
   absl::strings
   absl::synchronization
@@ -108,13 +110,15 @@ if(USE_XPRESS)
   set(XPRESS_DEP XPRESS::XPRESS)
 endif()
 
-# If wrapper are built, we need to have the install rpath in BINARY_DIR to package
-if(BUILD_PYTHON OR BUILD_JAVA OR BUILD_DOTNET)
-  set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-endif()
-
 # Main Target
 add_library(${PROJECT_NAME} "")
+# Xcode fails to build if library doesn't contains at least one source file.
+if(XCODE)
+  file(GENERATE
+    OUTPUT ${PROJECT_BINARY_DIR}/${PROJECT_NAME}/version.cpp
+    CONTENT "namespace {char* version = \"${PROJECT_VERSION}\";}")
+  target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}/version.cpp)
+endif()
 
 list(APPEND OR_TOOLS_COMPILE_DEFINITIONS
   "USE_BOP" # enable BOP support

@@ -634,8 +634,8 @@ bool LinearProgrammingConstraint::AddCutFromConstraints(
   std::vector<ImpliedBoundsProcessor::SlackInfo> ib_slack_infos;
   std::vector<LinearConstraint> implied_bound_cuts;
   implied_bounds_processor_.ProcessUpperBoundedConstraintWithSlackCreation(
-      first_new_var, expanded_lp_solution_, &cut_, &ib_slack_infos,
-      &implied_bound_cuts);
+      /*substitute_only_inner_variables=*/false, first_new_var,
+      expanded_lp_solution_, &cut_, &ib_slack_infos, &implied_bound_cuts);
   for (LinearConstraint& ib_cut : implied_bound_cuts) {
     DivideByGCD(&ib_cut);
     CHECK(constraint_manager_.DebugCheckConstraint(ib_cut));
@@ -703,7 +703,8 @@ bool LinearProgrammingConstraint::AddCutFromConstraints(
   RoundingOptions options;
   options.max_scaling = sat_parameters_.max_integer_rounding_scaling();
   integer_rounding_cut_helper_.ComputeCut(options, tmp_lp_values_, tmp_var_lbs_,
-                                          tmp_var_ubs_, &cut_);
+                                          tmp_var_ubs_,
+                                          &implied_bounds_processor_, &cut_);
 
   // Compute the activity. Warning: the cut no longer have the same size so we
   // cannot use tmp_lp_values_. Note that the substitution below shouldn't
@@ -796,6 +797,11 @@ bool LinearProgrammingConstraint::AddCutFromConstraints(
     ConvertToLinearConstraint(tmp_dense_vector_, cut_ub, &cut_);
   }
 
+  // Display some stats used for investigation of cut generation.
+  const std::string extra_info = absl::StrCat(
+      "num_ib_substitutions=", ib_slack_infos.size(), " num_lifted_booleans=",
+      integer_rounding_cut_helper_.NumLiftedBooleans());
+
   const double new_violation =
       ComputeActivity(cut_, expanded_lp_solution_) - ToDouble(cut_.ub);
   if (std::abs(violation - new_violation) >= 1e-4) {
@@ -804,7 +810,8 @@ bool LinearProgrammingConstraint::AddCutFromConstraints(
   }
 
   DivideByGCD(&cut_);
-  return constraint_manager_.AddCut(cut_, name, expanded_lp_solution_);
+  return constraint_manager_.AddCut(cut_, name, expanded_lp_solution_,
+                                    extra_info);
 }
 
 void LinearProgrammingConstraint::AddCGCuts() {
@@ -943,7 +950,13 @@ void LinearProgrammingConstraint::AddMirCuts() {
     // Separators for Mixed Integer Programs" which describe SCIP's MIR cuts
     // implementation (or at least an early version of it), a more complex score
     // is used.
-    row_weights[row] = std::abs(simplex_.GetDualValue(row));
+    //
+    // Note(user): Because we only consider tight rows under the current lp
+    // solution (i.e. non-basic rows), most should have a non-zero dual values.
+    // But there is some degenerate problem where these rows have a really low
+    // weight (or even zero), and having only weight of exactly zero in
+    // std::discrete_distribution will result in a crash.
+    row_weights[row] = std::max(1e-8, std::abs(simplex_.GetDualValue(row)));
   }
 
   std::vector<double> weights;

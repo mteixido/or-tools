@@ -2,6 +2,8 @@ load("@rules_cc//cc:defs.bzl", "cc_proto_library")
 
 package(default_visibility = ["//visibility:public"])
 
+exports_files(["model_exporter_swig_helper.h"])
+
 config_setting(
     name = "with_glpk",
     values = {"define": "USE_GLPK="},
@@ -107,12 +109,11 @@ cc_library(
         ":linear_solver_cc_proto",
         "//ortools/base",
         "//ortools/base:accurate_sum",
-        "//ortools/base:canonical_errors",
         "//ortools/base:hash",
         "//ortools/base:map_util",
         "@com_google_absl//absl/synchronization",
         "@com_google_absl//absl/types:optional",
-        "//ortools/base:status",
+        "@com_google_absl//absl/status",
         "//ortools/base:status_macros",
         "//ortools/base:stl_util",
         "@com_google_absl//absl/strings",
